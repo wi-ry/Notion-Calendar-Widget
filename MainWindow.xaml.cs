@@ -21,11 +21,11 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        
+
         // Position widget on right side of screen
         this.Left = SystemParameters.PrimaryScreenWidth - this.Width - 20;
         this.Top = 100;
-        
+
         _ = InitializeWebView();
     }
 
@@ -61,17 +61,17 @@ public partial class MainWindow : Window
             short sy = (short)((lp >> 16) & 0xFFFF);
 
             // Convert window position/size to physical pixels for comparison
-            double winLeft   = this.Left   * dpiX;
-            double winTop    = this.Top    * dpiY;
-            double winWidth  = this.ActualWidth  * dpiX;
+            double winLeft = this.Left * dpiX;
+            double winTop = this.Top * dpiY;
+            double winWidth = this.ActualWidth * dpiX;
             double winHeight = this.ActualHeight * dpiY;
-            double border    = BorderSize * dpiX;
+            double border = BorderSize * dpiX;
 
             double x = sx - winLeft;
             double y = sy - winTop;
 
             bool l = x < border;
-            bool r = x > winWidth  - border;
+            bool r = x > winWidth - border;
             bool t = y < border;
             bool b = y > winHeight - border;
 
@@ -79,10 +79,10 @@ public partial class MainWindow : Window
             if (t && r) { handled = true; return (IntPtr)HTTOPRIGHT; }
             if (b && l) { handled = true; return (IntPtr)HTBOTTOMLEFT; }
             if (b && r) { handled = true; return (IntPtr)HTBOTTOMRIGHT; }
-            if (l)      { handled = true; return (IntPtr)HTLEFT; }
-            if (r)      { handled = true; return (IntPtr)HTRIGHT; }
-            if (t)      { handled = true; return (IntPtr)HTTOP; }
-            if (b)      { handled = true; return (IntPtr)HTBOTTOM; }
+            if (l) { handled = true; return (IntPtr)HTLEFT; }
+            if (r) { handled = true; return (IntPtr)HTRIGHT; }
+            if (t) { handled = true; return (IntPtr)HTTOP; }
+            if (b) { handled = true; return (IntPtr)HTBOTTOM; }
         }
         return IntPtr.Zero;
     }
@@ -93,7 +93,7 @@ public partial class MainWindow : Window
         {
             // Create WebView2 control
             _webView = new WebView2();
-            
+
             // Make sure it stretches to fill the container
             _webView.HorizontalAlignment = HorizontalAlignment.Stretch;
             _webView.VerticalAlignment = VerticalAlignment.Stretch;
