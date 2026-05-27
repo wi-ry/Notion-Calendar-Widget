@@ -50,9 +50,7 @@ Build output is written to `release/`.
 - Release workflow: `.github/workflows/release.yml`
 	- Runs after `CI` completes successfully for `main`
 	- Uses `semantic-release` to generate version tags and GitHub releases
-- Release build workflow: `.github/workflows/release-build.yml`
-	- Runs when a GitHub release is published
-	- Builds the Windows executable and uploads it as release assets
+	- Builds the Windows executable and uploads it as a release asset when a new release is published
 
 ## Semantic Versioning
 
