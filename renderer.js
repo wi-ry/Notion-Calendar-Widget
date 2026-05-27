@@ -33,6 +33,10 @@ document.getElementById('refresh-btn').addEventListener('click', () => {
   window.electronAPI.refreshCalendar();
 });
 
+document.getElementById('options-btn').addEventListener('click', () => {
+  window.electronAPI.openOptionsWindow();
+});
+
 document.getElementById('close-btn').addEventListener('click', () => {
   window.electronAPI.closeWindow();
 });

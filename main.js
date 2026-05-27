@@ -4,8 +4,16 @@ const fs = require('fs');
 
 let win;
 let calendarView;
+let optionsWin;
 let resizeState = null;
 const TITLEBAR_HEIGHT = 40;
+const DEFAULT_WINDOW_BOUNDS = {
+  width: 800,
+  height: 600,
+};
+const DEFAULT_OPTIONS = {
+  rememberWindowBounds: true,
+};
 
 function getSettingsPath() {
   return path.join(app.getPath('userData'), 'settings.json');
@@ -23,6 +31,41 @@ function saveSettings(data) {
   try {
     fs.writeFileSync(getSettingsPath(), JSON.stringify(data, null, 2));
   } catch {}
+}
+
+function normalizeSettings(raw) {
+  const settings = raw && typeof raw === 'object' ? raw : {};
+  const options = {
+    ...DEFAULT_OPTIONS,
+    ...(settings.options && typeof settings.options === 'object' ? settings.options : {}),
+  };
+
+  let windowBounds = null;
+
+  if (settings.windowBounds && typeof settings.windowBounds === 'object') {
+    windowBounds = settings.windowBounds;
+  } else if (typeof settings.width === 'number' || typeof settings.height === 'number') {
+    // Backward compatibility with the previous flat bounds format.
+    windowBounds = {
+      width: settings.width,
+      height: settings.height,
+      x: settings.x,
+      y: settings.y,
+    };
+  }
+
+  return {
+    options,
+    windowBounds,
+  };
+}
+
+function loadNormalizedSettings() {
+  return normalizeSettings(loadSettings());
+}
+
+function saveNormalizedSettings(settings) {
+  saveSettings(normalizeSettings(settings));
 }
 
 function updateCalendarBounds() {
@@ -45,11 +88,12 @@ function updateCalendarBounds() {
 
 function createWindow() {
   const { width: screenWidth } = screen.getPrimaryDisplay().workAreaSize;
-  const saved = loadSettings();
-  const winWidth = saved.width || 800;
-  const winHeight = saved.height || 600;
-  const winX = saved.x ?? (screenWidth - winWidth - 20);
-  const winY = saved.y ?? 100;
+  const saved = loadNormalizedSettings();
+  const shouldRestoreBounds = saved.options.rememberWindowBounds && saved.windowBounds;
+  const winWidth = shouldRestoreBounds?.width || DEFAULT_WINDOW_BOUNDS.width;
+  const winHeight = shouldRestoreBounds?.height || DEFAULT_WINDOW_BOUNDS.height;
+  const winX = shouldRestoreBounds?.x ?? (screenWidth - winWidth - 20);
+  const winY = shouldRestoreBounds?.y ?? 100;
 
   win = new BrowserWindow({
     width: winWidth,
@@ -100,11 +144,51 @@ function createWindow() {
   });
 
   win.on('close', () => {
-    saveSettings(win.getBounds());
+    const settings = loadNormalizedSettings();
+
+    if (settings.options.rememberWindowBounds) {
+      settings.windowBounds = win.getBounds();
+    } else {
+      settings.windowBounds = null;
+    }
+
+    saveNormalizedSettings(settings);
   });
 
   win.on('closed', () => {
     calendarView = null;
+  });
+}
+
+function createOptionsWindow() {
+  if (optionsWin && !optionsWin.isDestroyed()) {
+    optionsWin.focus();
+    return;
+  }
+
+  optionsWin = new BrowserWindow({
+    width: 420,
+    height: 300,
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    parent: win,
+    modal: false,
+    autoHideMenuBar: true,
+    title: 'Widget Options',
+    webPreferences: {
+      preload: path.join(__dirname, 'options-preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+
+  optionsWin.removeMenu?.();
+  optionsWin.loadFile('options.html');
+
+  optionsWin.on('closed', () => {
+    optionsWin = null;
   });
 }
 
@@ -114,6 +198,7 @@ app.on('window-all-closed', () => app.quit());
 
 ipcMain.on('close-window', () => win?.close());
 ipcMain.on('refresh-calendar', () => calendarView?.webContents.reload());
+ipcMain.on('open-options-window', () => createOptionsWindow());
 
 ipcMain.on('begin-resize', (_event, edge, startX, startY) => {
   if (!win || win.isDestroyed()) return;
@@ -173,4 +258,36 @@ ipcMain.on('update-resize', (_event, currentX, currentY) => {
 
 ipcMain.on('end-resize', () => {
   resizeState = null;
+});
+
+ipcMain.handle('get-options', () => {
+  const settings = loadNormalizedSettings();
+  return settings.options;
+});
+
+ipcMain.handle('save-options', (_event, partialOptions) => {
+  const settings = loadNormalizedSettings();
+
+  settings.options = {
+    ...settings.options,
+    ...(partialOptions && typeof partialOptions === 'object' ? partialOptions : {}),
+  };
+
+  if (!settings.options.rememberWindowBounds) {
+    settings.windowBounds = null;
+  }
+
+  saveNormalizedSettings(settings);
+  return settings.options;
+});
+
+ipcMain.handle('reset-options', () => {
+  const settings = loadNormalizedSettings();
+  settings.options = { ...DEFAULT_OPTIONS };
+  saveNormalizedSettings(settings);
+  return settings.options;
+});
+
+ipcMain.on('close-options-window', () => {
+  optionsWin?.close();
 });
