@@ -19,6 +19,7 @@ jobs:
     outputs:
       published: ${{ steps.semantic.outputs.new_release_published }}
       tag: ${{ steps.semantic.outputs.new_release_git_tag }}
+      version: ${{ steps.semantic.outputs.new_release_version }}
 
     steps:
       - name: Checkout
@@ -45,6 +46,7 @@ jobs:
           if echo "$OUTPUT" | grep -q "Published GitHub release" && [ -n "$VERSION" ]; then
             echo "new_release_published=true" >> $GITHUB_OUTPUT
             echo "new_release_git_tag=v${VERSION}" >> $GITHUB_OUTPUT
+            echo "new_release_version=${VERSION}" >> $GITHUB_OUTPUT
           else
             echo "new_release_published=false" >> $GITHUB_OUTPUT
           fi
@@ -72,7 +74,7 @@ jobs:
         run: npm ci
 
       - name: Build Windows artifact
-        run: npm run build:win
+        run: npx electron-builder --win --x64 --publish never --config.extraMetadata.version=${{ needs.release.outputs.version }}
 
       - name: Upload artifact to release
         uses: softprops/action-gh-release@v2
