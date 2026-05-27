@@ -1,0 +1,12 @@
+{
+  "name": "notion-calendar-widget",
+  "version": "1.0.0",
+  "description": "Notion Calendar desktop widget",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "latest"
+  }
+}
