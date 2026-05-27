@@ -4,9 +4,45 @@
   "description": "Notion Calendar desktop widget",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "check": "node --check main.js && node --check preload.js && node --check renderer.js && node --check options-preload.js && node --check optionsRenderer.js",
+    "lint:commits": "commitlint --from HEAD~20 --to HEAD --verbose",
+    "build:win": "electron-builder --win --x64 --publish never",
+    "release": "semantic-release"
   },
   "devDependencies": {
-    "electron": "latest"
+    "@commitlint/cli": "^19.4.1",
+    "@commitlint/config-conventional": "^19.4.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.6",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "electron": "latest",
+    "electron-builder": "^24.13.3",
+    "semantic-release": "^24.2.5"
+  },
+  "build": {
+    "appId": "ca.willryan.notioncalendarwidget",
+    "productName": "Notion Calendar Widget",
+    "files": [
+      "*.js",
+      "*.html",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    }
   }
 }
