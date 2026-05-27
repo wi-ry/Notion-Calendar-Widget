@@ -48,7 +48,7 @@ Build output is written to `release/`.
 	- Validates PR title follows Conventional Commits
 	- Lints commit messages in the PR range with commitlint
 - Release workflow: `.github/workflows/release.yml`
-	- Runs on pushes to `main`
+	- Runs after `CI` completes successfully for `main`
 	- Uses `semantic-release` to generate version tags and GitHub releases
 - Release build workflow: `.github/workflows/release-build.yml`
 	- Runs when a GitHub release is published
