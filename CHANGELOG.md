@@ -1,3 +1,8 @@
+## <small>1.1.1 (2026-05-27)</small>
+
+* Merge branch 'main' of https://github.com/wi-ry/Notion-Calendar-Widget ([e8571f9](https://github.com/wi-ry/Notion-Calendar-Widget/commit/e8571f9))
+* fix:Update sem ver in .exe filename ([5008148](https://github.com/wi-ry/Notion-Calendar-Widget/commit/5008148))
+
 ## 1.1.0 (2026-05-27)
 
 * fix:Semantic version fixes ([78e961f](https://github.com/wi-ry/Notion-Calendar-Widget/commit/78e961f))
