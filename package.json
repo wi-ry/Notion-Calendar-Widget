@@ -21,8 +21,8 @@
     "@semantic-release/npm": "^13.1.5",
     "@semantic-release/release-notes-generator": "^14.1.0",
     "electron": "latest",
-    "electron-builder": "^24.13.3",
-    "semantic-release": "^24.2.5"
+    "electron-builder": "^26.15.3",
+    "semantic-release": "^25.0.5"
   },
   "build": {
     "appId": "ca.willryan.notioncalendarwidget",
@@ -41,10 +41,18 @@
       "signAndEditExecutable": false,
       "target": [
         {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ],
+          "artifactName": "${productName}-${version}-Setup-${arch}.${ext}"
+        },
+        {
           "target": "portable",
           "arch": [
             "x64"
-          ]
+          ],
+          "artifactName": "${productName}-${version}-Portable-${arch}.${ext}"
         }
       ],
       "artifactName": "${productName}-${version}-${arch}.${ext}"
