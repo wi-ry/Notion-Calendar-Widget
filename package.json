@@ -21,6 +21,7 @@
     "@semantic-release/github": "^11.0.6",
     "@semantic-release/npm": "^13.1.5",
     "@semantic-release/release-notes-generator": "^14.1.0",
+    "conventional-changelog-conventionalcommits": "^10.2.1",
     "electron": "latest",
     "electron-builder": "^26.15.3",
     "husky": "^9.1.7",
