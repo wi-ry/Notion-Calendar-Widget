@@ -1,3 +1,7 @@
+## 1.2.0 (2026-07-09)
+
+* feat: add custom app icon and update title styling ([08f502a](https://github.com/wi-ry/Notion-Calendar-Widget/commit/08f502a))
+
 ## <small>1.1.1 (2026-05-27)</small>
 
 * Merge branch 'main' of https://github.com/wi-ry/Notion-Calendar-Widget ([e8571f9](https://github.com/wi-ry/Notion-Calendar-Widget/commit/e8571f9))
