@@ -40,22 +40,15 @@
     "win": {
       "signAndEditExecutable": false,
       "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ],
-          "artifactName": "${productName}-${version}-Setup-${arch}.${ext}"
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64"
-          ],
-          "artifactName": "${productName}-${version}-Portable-${arch}.${ext}"
-        }
+        "nsis",
+        "portable"
       ],
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "nsis": {
+        "artifactName": "${productName}-${version}-Setup-${arch}.${ext}"
+      },
+      "portable": {
+        "artifactName": "${productName}-${version}-Portable-${arch}.${ext}"
+      }
     }
   }
 }
