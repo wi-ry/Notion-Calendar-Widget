@@ -105,12 +105,13 @@ function createWindow() {
     resizable: true,
     alwaysOnTop: false,
     skipTaskbar: true,
-    roundedCorners: true,
+    roundedCorners: false,
     transparent: false,
     hasShadow: true,
     backgroundColor: '#1a1a1a',
     minWidth: 300,
     minHeight: 200,
+    icon: path.join(__dirname, 'assets', 'notion-calendar.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       webviewTag: true,
@@ -192,6 +193,7 @@ function createOptionsWindow() {
   });
 }
 
+app.setAppUserModelId('ca.willryan.notioncalendarwidget');
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => app.quit());
