@@ -1,3 +1,5 @@
+## [1.2.1](https://github.com/wi-ry/Notion-Calendar-Widget/compare/v1.2.0...v1.2.1) (2026-07-09)
+
 ## 1.2.0 (2026-07-09)
 
 * feat: add custom app icon and update title styling ([08f502a](https://github.com/wi-ry/Notion-Calendar-Widget/commit/08f502a))
