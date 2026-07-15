@@ -13,6 +13,7 @@ const DEFAULT_WINDOW_BOUNDS = {
 };
 const DEFAULT_OPTIONS = {
   rememberWindowBounds: true,
+  openAtLogin: false,
 };
 
 function getSettingsPath() {
@@ -169,7 +170,7 @@ function createOptionsWindow() {
 
   optionsWin = new BrowserWindow({
     width: 420,
-    height: 300,
+    height: 360,
     resizable: false,
     minimizable: false,
     maximizable: false,
@@ -264,6 +265,8 @@ ipcMain.on('end-resize', () => {
 
 ipcMain.handle('get-options', () => {
   const settings = loadNormalizedSettings();
+  // Always reflect the actual OS login-item state.
+  settings.options.openAtLogin = app.getLoginItemSettings().openAtLogin;
   return settings.options;
 });
 
@@ -279,6 +282,10 @@ ipcMain.handle('save-options', (_event, partialOptions) => {
     settings.windowBounds = null;
   }
 
+  if (partialOptions && typeof partialOptions.openAtLogin === 'boolean') {
+    app.setLoginItemSettings({ openAtLogin: partialOptions.openAtLogin });
+  }
+
   saveNormalizedSettings(settings);
   return settings.options;
 });
@@ -286,6 +293,7 @@ ipcMain.handle('save-options', (_event, partialOptions) => {
 ipcMain.handle('reset-options', () => {
   const settings = loadNormalizedSettings();
   settings.options = { ...DEFAULT_OPTIONS };
+  app.setLoginItemSettings({ openAtLogin: false });
   saveNormalizedSettings(settings);
   return settings.options;
 });

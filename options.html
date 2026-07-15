@@ -83,6 +83,10 @@
       background: #2a6fdc;
     }
 
+    .section + .section {
+      margin-top: 10px;
+    }
+
     #status {
       min-height: 18px;
       margin-top: 10px;
@@ -101,6 +105,14 @@
       Save window location and size on close
     </label>
     <div class="hint">If disabled, the widget starts at the default size and position each launch.</div>
+  </div>
+
+  <div class="section">
+    <label for="open-at-login">
+      <input type="checkbox" id="open-at-login">
+      Launch on Windows startup
+    </label>
+    <div class="hint">Automatically open the widget when you log in to Windows.</div>
   </div>
 
   <div class="actions">
