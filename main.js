@@ -283,7 +283,15 @@ ipcMain.handle('save-options', (_event, partialOptions) => {
   }
 
   if (partialOptions && typeof partialOptions.openAtLogin === 'boolean') {
-    app.setLoginItemSettings({ openAtLogin: partialOptions.openAtLogin });
+    // Only write to the OS startup registry if the app is packaged (production)
+    if (app.isPackaged) {
+      app.setLoginItemSettings({ 
+        openAtLogin: partialOptions.openAtLogin,
+        path: app.getPath('exe') // Explicitly points to your production executable
+      });
+    } else {
+      console.log('Development mode detected: Skipping registry auto-launch update.');
+    }
   }
 
   saveNormalizedSettings(settings);
