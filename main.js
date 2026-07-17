@@ -283,12 +283,17 @@ ipcMain.handle('save-options', (_event, partialOptions) => {
   }
 
   if (partialOptions && typeof partialOptions.openAtLogin === 'boolean') {
-    // Only write to the OS startup registry if the app is packaged (production)
     if (app.isPackaged) {
+      // 1. Detect if this is a portable app, otherwise fall back to standard exe path
+      const actualExePath = process.env.PORTABLE_EXECUTABLE_FILE || app.getPath('exe');
+
+      // 2. Set the login item pointing to the correct executable
       app.setLoginItemSettings({ 
         openAtLogin: partialOptions.openAtLogin,
-        path: app.getPath('exe') // Explicitly points to your production executable
+        path: actualExePath
       });
+      
+      console.log(`Auto-launch registered pointing to: ${actualExePath}`);
     } else {
       console.log('Development mode detected: Skipping registry auto-launch update.');
     }
