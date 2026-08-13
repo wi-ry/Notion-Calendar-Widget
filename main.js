@@ -91,10 +91,10 @@ function createWindow() {
   const { width: screenWidth } = screen.getPrimaryDisplay().workAreaSize;
   const saved = loadNormalizedSettings();
   const shouldRestoreBounds = saved.options.rememberWindowBounds && saved.windowBounds;
-  const winWidth = shouldRestoreBounds?.width || DEFAULT_WINDOW_BOUNDS.width;
-  const winHeight = shouldRestoreBounds?.height || DEFAULT_WINDOW_BOUNDS.height;
-  const winX = shouldRestoreBounds?.x ?? (screenWidth - winWidth - 20);
-  const winY = shouldRestoreBounds?.y ?? 100;
+  const winWidth = shouldRestoreBounds ? saved.windowBounds.width : DEFAULT_WINDOW_BOUNDS.width;
+  const winHeight = shouldRestoreBounds ? saved.windowBounds.height : DEFAULT_WINDOW_BOUNDS.height;
+  const winX = shouldRestoreBounds ? saved.windowBounds.x : screenWidth - winWidth - 20;
+  const winY = shouldRestoreBounds ? saved.windowBounds.y : 100;
 
   win = new BrowserWindow({
     width: winWidth,
@@ -273,9 +273,11 @@ ipcMain.handle('get-options', () => {
 ipcMain.handle('save-options', (_event, partialOptions) => {
   const settings = loadNormalizedSettings();
 
+  const { rememberWindowBounds, openAtLogin } = partialOptions ?? {};
   settings.options = {
     ...settings.options,
-    ...(partialOptions && typeof partialOptions === 'object' ? partialOptions : {}),
+    ...(typeof rememberWindowBounds === 'boolean' ? { rememberWindowBounds } : {}),
+    ...(typeof openAtLogin === 'boolean' ? { openAtLogin } : {}),
   };
 
   if (!settings.options.rememberWindowBounds) {
@@ -292,10 +294,6 @@ ipcMain.handle('save-options', (_event, partialOptions) => {
         openAtLogin: partialOptions.openAtLogin,
         path: actualExePath
       });
-      
-      console.log(`Auto-launch registered pointing to: ${actualExePath}`);
-    } else {
-      console.log('Development mode detected: Skipping registry auto-launch update.');
     }
   }
 
